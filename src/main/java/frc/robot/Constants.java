@@ -32,7 +32,7 @@ public final class Constants {
 
   public static class ElevatorConstants {
     public static class PhsicalConstants{
-      
+      public static final double MAX_POSITION = 32;
     }
   }  
   
@@ -114,6 +114,10 @@ public final class Constants {
     public final static int DRIVE_FRONT_RIGHT = 2;
     public final static int DRIVE_BACK_LEFT = 3;
     public final static int DRIVE_BACK_RIGHT = 4;
+
+    //Elevator
+    public final static int ELEVATOR_LEFT = 1;
+    public final static int ELEVATOR_RIGHT = 2;
   };
 
   public static double PI = 3.141592653589793238462643;
