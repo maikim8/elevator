@@ -30,6 +30,12 @@ public final class Constants {
     REPLAY
   }
 
+  public static class ElevatorConstants {
+    public static class PhsicalConstants{
+      
+    }
+  }  
+  
   public static class Drivetrain {
     // drivetrain constants
     public static double DRIVE_TRACK_WIDTH_M = 0.86;// 0.66; // m
