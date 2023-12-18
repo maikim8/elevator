@@ -1,4 +1,8 @@
-public interface elevatorIO {
+package frc.robot.subsystems.elevator;
+
+import org.littletonrobotics.junction.AutoLog;
+
+public interface ElevatorIO {
     @AutoLog
     public static class elevatorIOInputs {
 
@@ -15,10 +19,19 @@ public interface elevatorIO {
     }
 
     public default double getAngleRadsPerSec(double angleRads) {
+        return 0.0;
     }
+
+    public default void setPIDConstants(double p, double i, double d, double ff) {}
 
     public default void setSetpoint(double setpoint){
     }
+
+    public default boolean atSetpoint(){
+        return false;
+    }
+
+    public default void setBrake(boolean brake) {}
 
     public default void runPID() {
     }
