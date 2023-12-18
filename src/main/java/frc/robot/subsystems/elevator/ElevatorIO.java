@@ -11,7 +11,7 @@ public interface elevatorIO {
     }
 
     public default double getPosition(double elevatorPosition) {
-        return elevatorPosition;
+        return 0.0;
     }
 
     public default double getAngleRadsPerSec(double angleRads) {
@@ -31,12 +31,12 @@ public interface elevatorIO {
 
     public default void setFF(double FF) {}
 
-    public default double getP() { return P; }
+    public default double getP() { return 0.0; }
 
-    public default double getI() { return I; }
+    public default double getI() { return 0.0; }
 
-    public default double getD() { return D; }
+    public default double getD() { return 0.0; }
 
-    public default double getFF() { return FF; }
+    public default double getFF() { return 0.0; }
 
 }
