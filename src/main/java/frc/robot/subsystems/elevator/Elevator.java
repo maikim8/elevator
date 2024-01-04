@@ -91,6 +91,10 @@ public class Elevator extends SubsystemBase {
         setVoltage(speed * 12);
     }
 
+    public void startPID() {
+        io.startPIDControl();
+    }
+
     public void runPID() {
         io.goToSetpoint(setpoint);
     }
