@@ -121,63 +121,10 @@ public class RobotContainer {
     drive.setDefaultCommand(
         new RunCommand(() -> drive.driveArcade(driver.getDriveForward(), driver.getDriveTurn()), drive));
 
-    elevator.setDefaultCommand(
-        new RunCommand(() -> elevator.move(operator.getElevatorSpeed()), elevator));
-    operator.getY().onTrue(elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND));
-    operator.getA().onTrue(elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_RETRACT));
-
     // cancel trajectory
     driver.getY().onTrue(drive.endTrajectoryCommand());
   }
-  
-  public CommandBase scoreHigh() {
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            claw.grab(),
-            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_TOP),
-            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
-        new WaitCommand(1),
-        claw.release());
-  }
 
-  public CommandBase scoreMid() {
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            claw.grab(),
-            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_MID),
-            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
-        new WaitCommand(1),
-        claw.release());
-  }
-
-  public CommandBase scoreLow() {
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            claw.grab(),
-            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_BOTTOM),
-            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
-        new WaitCommand(1),
-        claw.release());
-  }
-
-  public CommandBase holdPos() {
-    return new RunCommand(() -> {
-      claw.release().schedule();
-      pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_HOLD).schedule();
-      elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_RETRACT).schedule();
-    }, claw, pivotArm, elevator);
-  }
-
-  public CommandBase grabStation() {
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            claw.release(),
-            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_TOP),
-            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
-        new WaitCommand(1), // back up and then grab
-        claw.grab());
-  }
-  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

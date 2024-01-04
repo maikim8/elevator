@@ -4,11 +4,15 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
     @AutoLog
-    public static class elevatorIOInputs {
-
+    public static class ElevatorIOInputs {
+        public double positionMeters = 0.0;
+        public double velocityMeters = 0.0;
+        public double appliedVolts = 0.0;
+        public double[] currentAmps = new double[] {};
+        public double[] tempCelsius = new double[] {};
     }
     
-    public default void updateInputs(elevatorIOInputs inputs) {
+    public default void updateInputs(ElevatorIOInputs inputs) {
     }
     
     public default void setVoltage(double volts) {
@@ -36,6 +40,10 @@ public interface ElevatorIO {
     public default void runPID() {
     }
 
+    public default double getDistance() {
+        return 0;
+    }
+
     public default void setP(double p) {}
     
     public default void setI(double i) {}
@@ -51,5 +59,9 @@ public interface ElevatorIO {
     public default double getD() { return 0.0; }
 
     public default double getFF() { return 0.0; }
+
+    public double ELEVATOR_MAX_HEIGHT = 0;
+    public double ELEVATOR_MIN_HEIGHT = 0;
+
 
 }

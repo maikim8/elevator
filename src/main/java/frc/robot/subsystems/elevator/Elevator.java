@@ -18,39 +18,6 @@ import frc.robot.RobotContainer;
 import static frc.robot.Constants.Elevator.*;
 import static frc.robot.Constants.Elevator.ElevatorPhysicalConstants.ELEVATOR_PID;
 
-public class Elevator extends PIDCommand {
-
-    private final Elevator elevator;
-
-    public.ElevatorPIDCommand (Elevator elevator, double setpoint) {
-        super(
-            new PIDController(/* I don't know what parameters*/),
-            elevator::getDistance,
-            setpoint,
-            output -> elevator.setVoltage(output),
-            elevator
-        );
-
-        this.elevator = elevator;
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
-        elevator.startPID();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        elevator.move(0);
-    }
-
-    @Override
-        public boolean isFinished() {
-            return elevator.atSetpoint();
-        }
-}
-
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     
@@ -72,10 +39,13 @@ public class Elevator extends SubsystemBase {
     // Constructor
     public Elevator(ElevatorIO io) {
         this.io = io;
-        this.inputs = new ElevatorIOInputsAutoLogged(/*what are the required parameters?*/)
-            // Creating additional MechanismLigament2d instances to represent different parts of the mechanism
-            //These instances can be used for visualization on SmartDashboard
-        ElevatorArm = new MechanismLigament2d("ElevatorArm", 5, 18, 5, new Color8Bit(Color.kYGreen));
+        
+        /* If you want to add this, add it at line 131
+         * Usually, the mechanism visualizations should only be for moving parts
+         */
+        // Creating additional MechanismLigament2d instances to represent different parts of the mechanism
+        //These instances can be used for visualization on SmartDashboard
+        ElevatorArm = new MechanismLigament2d("ElevatorArm", 5, 18, 5, new Color8Bit(Color.kGreen));
         //the dimensions (length,width,height) and the color is customizable. Currently it's green and yellow for parallel universe FRC 1257 theme with the snails and stuff
         ElevatorPlatform = new MechanismLigament2d("ElevatorPlatform", 5, 36, 5, new Color8Bit(Color.kPurple));
         SmartDashboard.putData(getName(), this);
@@ -118,6 +88,9 @@ public class Elevator extends SubsystemBase {
             motorVolts = 0;
         }
 
+        io.setVoltage(motorVolts);
+    }
+
     public void moveUp(double speed) {
         move(Math.abs(speed));
     }
@@ -125,10 +98,7 @@ public class Elevator extends SubsystemBase {
     public void moveDown(double speed) {
         move(-Math.abs(speed));
     }
-
-        io.setVoltage(motorVolts);
-    }
-
+    
     public void move(double speed) {
         setVoltage(speed * 12);
     }
@@ -170,8 +140,4 @@ public class Elevator extends SubsystemBase {
             this
         );
     }
-    
-}
-    }
-    
 }
