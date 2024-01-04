@@ -20,10 +20,7 @@ import static frc.robot.Constants.Elevator.ElevatorPhysicalConstants.ELEVATOR_PI
 
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-
-public class Elevator extends SubsystemBase {
-    private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-
+    
     private LoggedDashboardNumber p = new LoggedDashboardNumber("Elevator/P", ELEVATOR_PID[0]);
     private LoggedDashboardNumber i = new LoggedDashboardNumber("Elevator/I", ELEVATOR_PID[1]);
     private LoggedDashboardNumber d = new LoggedDashboardNumber("Elevator/D", ELEVATOR_PID[2]);
@@ -36,6 +33,7 @@ public class Elevator extends SubsystemBase {
     // Create a Mechanism2d visualization of the elevator
     private MechanismLigament2d ElevatorMechanism;
 
+    // Constructor
     public Elevator(ElevatorIO io) {
         this.io = io;
         this.inputs = new ElevatorIOInputsAutoLogged(/*what are the required parameters?*/)
