@@ -47,6 +47,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final GyroIOReal gyro = GyroIOReal.getInstance();
+  private final Elevator elevator; // Declare elevator subsystem
 
   private Mechanism2d mech = new Mechanism2d(3, 3);
 
