@@ -76,6 +76,14 @@ public class Elevator extends SubsystemBase {
             motorVolts = 0;
         }
 
+    public void moveUp(double speed) {
+        move(Math.abs(speed));
+    }
+
+    public void moveDown(double speed) {
+        move(-Math.abs(speed));
+    }
+
         io.setVoltage(motorVolts);
     }
 
