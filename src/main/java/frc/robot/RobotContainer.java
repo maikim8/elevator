@@ -17,6 +17,12 @@ import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.drive.DriveIOSparkMax;
 import frc.robot.subsystems.drive.GyroIOReal;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSparkMax;
+
+import static frc.robot.Constants.Elevator.ElevatorPhysicalConstants;
 
 import frc.robot.util.CommandSnailController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,17 +74,21 @@ public class RobotContainer {
       // Real robot, instantiate hardware IO implementations
       case REAL:
         drive = new Drive(new DriveIOSparkMax(), new Pose2d());
+        elevator = new Elevator(new ElevatorIOSparkMax());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
       case SIM:
         drive = new Drive(new DriveIOSim(), new Pose2d());
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       // Replayed robot, disable IO implementations
       default:
         drive = new Drive(new DriveIO() {
         }, new Pose2d());
+        elevator = new Elevator(new ElevatorIO() {
+        });
         break;
     }
 
@@ -86,6 +96,7 @@ public class RobotContainer {
 
     MechanismRoot2d root = mech.getRoot("elevator", 1, 0.5);
     // add subsystem mechanisms
+    elevator.setMechanism(root.append(elevator.getElevatorMechanism()));
     SmartDashboard.putData("Arm Mechanism", mech);
 
     isBlue = DriverStation.getAlliance() == DriverStation.Alliance.Blue;
@@ -110,10 +121,63 @@ public class RobotContainer {
     drive.setDefaultCommand(
         new RunCommand(() -> drive.driveArcade(driver.getDriveForward(), driver.getDriveTurn()), drive));
 
+    elevator.setDefaultCommand(
+        new RunCommand(() -> elevator.move(operator.getElevatorSpeed()), elevator));
+    operator.getY().onTrue(elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND));
+    operator.getA().onTrue(elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_RETRACT));
+
     // cancel trajectory
     driver.getY().onTrue(drive.endTrajectoryCommand());
   }
+  
+  public CommandBase scoreHigh() {
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            claw.grab(),
+            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_TOP),
+            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
+        new WaitCommand(1),
+        claw.release());
+  }
 
+  public CommandBase scoreMid() {
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            claw.grab(),
+            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_MID),
+            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
+        new WaitCommand(1),
+        claw.release());
+  }
+
+  public CommandBase scoreLow() {
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            claw.grab(),
+            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_BOTTOM),
+            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
+        new WaitCommand(1),
+        claw.release());
+  }
+
+  public CommandBase holdPos() {
+    return new RunCommand(() -> {
+      claw.release().schedule();
+      pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_HOLD).schedule();
+      elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_RETRACT).schedule();
+    }, claw, pivotArm, elevator);
+  }
+
+  public CommandBase grabStation() {
+    return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            claw.release(),
+            pivotArm.PIDCommand(Constants.PivotArm.PIVOT_ARM_SETPOINT_TOP),
+            elevator.PIDCommand(ElevatorPhysicalConstants.ELEVATOR_SETPOINT_EXTEND)),
+        new WaitCommand(1), // back up and then grab
+        claw.grab());
+  }
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
