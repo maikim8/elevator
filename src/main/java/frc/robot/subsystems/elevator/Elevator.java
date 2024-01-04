@@ -18,6 +18,39 @@ import frc.robot.RobotContainer;
 import static frc.robot.Constants.Elevator.*;
 import static frc.robot.Constants.Elevator.ElevatorPhysicalConstants.ELEVATOR_PID;
 
+public class Elevator extends PIDCommand {
+
+    private final Elevator elevator;
+
+    public.ElevatorPIDCommand (Elevator elevator, double setpoint) {
+        super(
+            new PIDController(/* I don't know what parameters*/),
+            elevator::getDistance,
+            setpoint,
+            output -> elevator.setVoltage(output),
+            elevator
+        );
+
+        this.elevator = elevator;
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        elevator.startPID();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        elevator.move(0);
+    }
+
+    @Override
+        public boolean isFinished() {
+            return elevator.atSetpoint();
+        }
+}
+
 public class Elevator extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     
