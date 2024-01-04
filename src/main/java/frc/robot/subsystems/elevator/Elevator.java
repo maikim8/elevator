@@ -58,6 +58,9 @@ public class Elevator extends SubsystemBase {
     private LoggedDashboardNumber i = new LoggedDashboardNumber("Elevator/I", ELEVATOR_PID[1]);
     private LoggedDashboardNumber d = new LoggedDashboardNumber("Elevator/D", ELEVATOR_PID[2]);
     private LoggedDashboardNumber ff = new LoggedDashboardNumber("Elevator/FF", ELEVATOR_PID[3]);
+   // Additional mechanism elements
+    private MechanismLigament2d ElevatorArm;
+    private MechanismLigament2d ElevatorPlatform;
 
     private double setpoint = 0;
 
@@ -70,7 +73,13 @@ public class Elevator extends SubsystemBase {
     public Elevator(ElevatorIO io) {
         this.io = io;
         this.inputs = new ElevatorIOInputsAutoLogged(/*what are the required parameters?*/)
+            // Creating additional MechanismLigament2d instances to represent different parts of the mechanism
+            //These instances can be used for visualization on SmartDashboard
+        ElevatorArm = new MechanismLigament2d("ElevatorArm", 5, 18, 5, new Color8Bit(Color.kYGreen));
+        //the dimensions (length,width,height) and the color is customizable. Currently it's green and yellow for parallel universe FRC 1257 theme with the snails and stuff
+        ElevatorPlatform = new MechanismLigament2d("ElevatorPlatform", 5, 36, 5, new Color8Bit(Color.kPurple));
         SmartDashboard.putData(getName(), this);
+    
     }
 
     public double highSetpoint() {
